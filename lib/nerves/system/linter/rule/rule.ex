@@ -27,7 +27,17 @@ defmodule Nerves.System.Linter.Rule do
       alias Nerves.System.Linter.Rule.Callbacks
       import Callbacks
       @before_compile Callbacks
+      @after_compile __MODULE__
       @behaviour Rule
+
+      defmacro __after_compile__(_env, _md5) do
+        IO.puts __MODULE__
+        unless function_exported?(__MODULE__, :__checks__, 0) do
+          raise CompileError, description: """
+          Be sure to call `evaluate()` after your rule is defined.
+          """, file: __ENV__.file
+        end
+      end
     end
   end
 

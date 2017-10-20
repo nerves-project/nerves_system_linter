@@ -6,6 +6,7 @@ defmodule Nerves.System.LinterTest do
   defmodule SuccessRule do
     use Nerves.System.Linter.Rule
     ensure_package("BR2_PACKAGE_FWUP")
+    # ensure_value_match("PACKAGE_NAME", <<"nerves_system_", rest :: binary>>)
     evaluate()
   end
 
@@ -34,6 +35,7 @@ defmodule Nerves.System.LinterTest do
     end
   end
 
+  @timeout :infinity
   test "lints rpi0 build config" do
     file = find_file("rpi0.build.config")
     res = Linter.file_to_map(file)

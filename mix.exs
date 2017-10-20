@@ -1,10 +1,10 @@
-defmodule NervesSystemLinter.Mixfile do
+defmodule Nerves.System.Linter.Mixfile do
   use Mix.Project
 
   def project do
     [
       app: :nerves_system_linter,
-      version: "0.2.0",
+      version: "0.2.1",
       elixir: "~> 1.5",
       package: package(),
       description: description(),
@@ -16,7 +16,7 @@ defmodule NervesSystemLinter.Mixfile do
 
   def application do
     [
-      extra_applications: [:logger]
+      extra_applications: [:logger, :eex]
     ]
   end
 

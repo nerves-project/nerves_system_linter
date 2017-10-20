@@ -37,6 +37,21 @@ defmodule Nerves.System.Linter.Rule.Checks do
     update(defconfig, res, message, opts)
   end
 
+  def ensure_value_match(defconfig, package_name, pattern, opts \\ []) do
+    pattern = Code.eval_string(pattern)
+    expr = defconfig.config[package_name]
+    quoted = quote do
+      case {unquote(expr), []} do
+        unquote(pattern) ->
+          true
+        _ ->
+          false
+      end
+    end
+    {res, _env} = Code.eval_quoted(quoted)
+    update(defconfig, res, "ensure_value_match: #{package_name}: #{res || false}", opts)
+  end
+
   @spec update(Defconfig.t, boolean, Callbacks.message, Callbacks.args) :: Defconfig.t
   defp update(defconfig, res, message, opts) do
     warn? = Keyword.get(opts, :warn, false)

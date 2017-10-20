@@ -10,7 +10,7 @@ defmodule Nerves.System.Linter.Rule.Callbacks do
   @type args :: [arg]
 
   @typedoc "Argument to a check."
-  @type arg :: message_arg | warning_arg 
+  @type arg :: message_arg | warning_arg
 
   @typedoc "Replace the message for a check."
   @type message_arg :: {:message, message}
@@ -20,6 +20,13 @@ defmodule Nerves.System.Linter.Rule.Callbacks do
 
   @typedoc "If a check evaluates false, it should be a warning instead of error."
   @type warning_arg :: {:warn, boolean}
+
+  defmacro ensure_value_match(config_name, pattern, opts \\ []) do
+    pattern = inspect pattern
+    quote do
+      @rules [%Rule{check: :ensure_value_match, args: [unquote(config_name), unquote(pattern), unquote(opts)]} | @rules]
+    end
+  end
 
   @doc "Ensures a package is enabled."
   @spec ensure_package(Defconfig.config_name, args) :: Macro.t
