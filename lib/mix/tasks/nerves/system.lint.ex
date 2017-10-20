@@ -1,7 +1,7 @@
 defmodule Mix.Tasks.Nerves.System.Lint do
   use Mix.Task
   alias Nerves.System.Defconfig
-  alias Defconfig.Linter
+  alias Nerves.System.Linter
   @rules [CheckFWUP, HasSkeleton, Erlinit, WpaSupplicant, GlobalPatchDir, GenerateLocale]
 
   def run(_) do
@@ -15,7 +15,7 @@ defmodule Mix.Tasks.Nerves.System.Lint do
           |> Path.join()
           |> Linter.file_to_map()
           |> Defconfig.add_rules(@rules)
-          |> Defconfig.eval_rules()
+          |> Linter.eval_rules()
 
         case res do
           %Defconfig{errors: [], warnings: [], success: success} = _res ->

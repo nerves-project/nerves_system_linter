@@ -1,5 +1,5 @@
 defmodule CheckFWUP do
-  use Nerves.System.Defconfig.Linter.Rule
+  use Nerves.System.Linter.Rule
   ensure_package "FWUP"
   evaluate()
 end
