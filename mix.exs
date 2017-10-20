@@ -16,7 +16,7 @@ defmodule Nerves.System.Linter.Mixfile do
 
   def application do
     [
-      extra_applications: [:logger, :eex]
+      extra_applications: [:logger]
     ]
   end
 
