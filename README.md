@@ -12,10 +12,11 @@ end
 
 ## Usage
 
-This package includes a new mix task named `nerves.system.lint` which is dependant on the `NERVES_SYSTEM` environment variable which must be set to a location where a nerves `.config` file is present.  This file is generated after building a nerves system.
+This package includes a new mix task named `nerves.system.lint` which can run for a customized nerves system (ref [customizing-your-own-nerves-system](https://hexdocs.pm/nerves/systems.html#customizing-your-own-nerves-system)) against its config file, typically named `nerves_defconfig`.  
+
+Running this task would typically look something like this
 ```
-$ export NERVES_SYSTEM=~/nerves_systems/nerves_system_rpi0/
-$ mix nerves.system.lint
+$ mix nerves.system.lint nerves_defconfig
 ```
 
 ## Output
