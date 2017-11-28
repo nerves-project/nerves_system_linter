@@ -5,7 +5,7 @@
 ```elixir
 def deps do
   [
-    {:nerves_system_linter, "~> 0.1.0"}
+    {:nerves_system_linter, "~> 0.2"}
   ]
 end
 ```
