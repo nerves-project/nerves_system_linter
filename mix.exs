@@ -30,7 +30,7 @@ defmodule Nerves.System.Linter.Mixfile do
     [
       maintainers: ["Connor Rigby"],
       licenses: ["Apache 2.0"],
-      files: ["config", "fixture", "lib", "rules", "test", "mix.exs", "LICENSE", "README.md"],
+      files: ["config", "fixture", "lib", "rules", "test", "mix.exs", "LICENSE", "README.md", "CHANGELOG.md"],
       links: %{"Github" => "https://github.com/nerves-project/nerves_system_linter"}
     ]
   end
