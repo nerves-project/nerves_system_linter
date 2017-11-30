@@ -5,7 +5,7 @@ defmodule Nerves.System.LinterTest do
 
   defmodule SuccessRule do
     use Nerves.System.Linter.Rule
-    ensure_package("BR2_PACKAGE_FWUP")
+    ensure_package("BR2_PACKAGE_NERVES_CONFIG")
     # ensure_value_match("PACKAGE_NAME", <<"nerves_system_", rest :: binary>>)
     evaluate()
   end
@@ -47,7 +47,7 @@ defmodule Nerves.System.LinterTest do
 
     assert res.errors == ["ensure_package: BR2_PACKAGE_NOT_REAL_PACKAGE_B: false"]
     assert res.warnings == ["ensure_package: BR2_PACKAGE_NOT_REAL_PACKAGE_A: false"]
-    assert res.success == ["ensure_package: BR2_PACKAGE_FWUP: true"]
+    assert res.success == ["ensure_package: BR2_PACKAGE_NERVES_CONFIG: true"]
   end
 
   test "lints rpi0 defconfig" do
@@ -61,6 +61,6 @@ defmodule Nerves.System.LinterTest do
 
     assert res.errors == ["ensure_package: BR2_PACKAGE_NOT_REAL_PACKAGE_B: false"]
     assert res.warnings == ["ensure_package: BR2_PACKAGE_NOT_REAL_PACKAGE_A: false"]
-    assert res.success == ["ensure_package: BR2_PACKAGE_FWUP: true"]
+    assert res.success == ["ensure_package: BR2_PACKAGE_NERVES_CONFIG: true"]
   end
 end
