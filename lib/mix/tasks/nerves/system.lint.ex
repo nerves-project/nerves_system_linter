@@ -74,14 +74,14 @@ defmodule Mix.Tasks.Nerves.System.Lint do
     case res do
       %Defconfig{errors: [], warnings: [], success: success} = _res ->
         Mix.shell().info([:green, "Successful checks:", "\n\n", Enum.join(success, "\n")])
-
+        System.halt(0)
       %Defconfig{errors: errors, warnings: warnings, success: success} ->
         Mix.shell().info([:green, "Successful checks:", "\n\n", Enum.join(success, "\n"), "\n"])
         Mix.shell().info("==========================\n")
         Mix.shell().info([:yellow, "Warn checks:", "\n\n", Enum.join(warnings, "\n"), "\n"])
         Mix.shell().info("==========================\n")
         Mix.shell().info([:red, "Failed checks:", "\n\n", Enum.join(errors, "\n")])
+        System.halt(1)
     end
-    res
   end
 end
