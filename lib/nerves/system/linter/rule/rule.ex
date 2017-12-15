@@ -23,12 +23,18 @@ defmodule Nerves.System.Linter.Rule do
         Linter Rule #{__MODULE__}
         """
       end
+      
+      Module.register_attribute __MODULE__,
+      :rules, accumulate: false, persist: false
+      Module.put_attribute __MODULE__, :rules, nil
+
       alias Nerves.System.Linter.Rule
       alias Nerves.System.Linter.Rule.Callbacks
       import Callbacks
       @before_compile Callbacks
       @after_compile __MODULE__
       @behaviour Rule
+      
 
       defmacro __after_compile__(_env, _md5) do
         IO.puts __MODULE__
