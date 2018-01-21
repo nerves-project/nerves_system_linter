@@ -23,7 +23,7 @@ defmodule Nerves.System.Linter.Rule do
         Linter Rule #{__MODULE__}
         """
       end
-      
+
       Module.register_attribute __MODULE__,
       :rules, accumulate: false, persist: false
       Module.put_attribute __MODULE__, :rules, nil
@@ -34,10 +34,10 @@ defmodule Nerves.System.Linter.Rule do
       @before_compile Callbacks
       @after_compile __MODULE__
       @behaviour Rule
-      
+
 
       defmacro __after_compile__(_env, _md5) do
-        IO.puts __MODULE__
+        # IO.puts __MODULE__
         unless function_exported?(__MODULE__, :__checks__, 0) do
           raise CompileError, description: """
           Be sure to call `evaluate()` after your rule is defined.
