@@ -12,29 +12,59 @@ defmodule Nerves.System.Linter.Rule.Checks do
         <<"BR2_PACKAGE_", _rest::binary>> = package_name,
         opts
       ) do
-    res = config[package_name] || false
-    message = Keyword.get(opts, :message, "ensure_package: #{package_name}: #{res || false}")
-    update(defconfig, res, message, opts)
+    if eval_conditionals(defconfig, opts) do
+      res = config[package_name] || false
+      message = Keyword.get(opts, :message, "ensure_package: #{package_name}: #{res || false}")
+      update(defconfig, res, message, opts)
+    else
+      defconfig
+    end
   end
 
   def ensure_package(%Defconfig{} = defconfig, package_name, opts) do
-    ensure_package(defconfig, "BR2_PACKAGE_" <> package_name, opts)
+    if eval_conditionals(defconfig, opts) do
+      ensure_package(defconfig, "BR2_PACKAGE_" <> package_name, opts)
+    else
+      defconfig
+    end
   end
 
   @doc "Ensures a boolean value."
   @spec ensure_bool(Defconfig.t, Defconfig.config_name, boolean, Callbacks.args) :: Defconfig.t
   def ensure_bool(%Defconfig{} = defconfig, config, bool, opts \\ []) do
-    res = config in Map.keys(defconfig.config) and defconfig.config[config] == bool
-    message = Keyword.get(opts, :message, "ensure_bool: #{config}: #{res || false}")
-    update(defconfig, res, message, opts)
+    if eval_conditionals(defconfig, opts) do
+      res = config in Map.keys(defconfig.config) and defconfig.config[config] == bool
+      message = Keyword.get(opts, :message, "ensure_bool: #{config}: #{res || false}")
+      update(defconfig, res, message, opts)
+    else
+      defconfig
+    end
   end
 
   @doc "Ensures a value."
   @spec ensure_value(Defconfig.t, Defconfig.config_name, Defconfig.package_value, Callbacks.args) :: Defconfig.t
   def ensure_value(%Defconfig{} = defconfig, config, value, opts \\ []) do
-    res = defconfig.config[config] == value
-    message = Keyword.get(opts, :message, "ensure_value: #{config}: #{res || false}")
-    update(defconfig, res, message, opts)
+    if eval_conditionals(defconfig, opts) do
+      res = defconfig.config[config] == value
+      message = Keyword.get(opts, :message, "ensure_value: #{config}: #{res || false}")
+      update(defconfig, res, message, opts)
+    else
+      # IO.puts "conditional failed for not evaluating #{config} == #{value}"
+      defconfig
+    end
+  end
+
+  def eval_conditionals(defconfig, opts) do
+    case Keyword.fetch(opts, :if) do
+      {:ok, l} when is_list(l) ->
+        Enum.any?(l, fn({check, val}) ->
+          r = defconfig.config[check] == (val || false)
+          # IO.puts "Conditional: #{check}(#{defconfig.config[check]}) => #{val} (#{r})"
+          r
+        end)
+      :error ->
+        true
+    end
   end
 
   def ensure_value_match(defconfig, package_name, pattern, opts \\ []) do
