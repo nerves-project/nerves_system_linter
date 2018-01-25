@@ -4,13 +4,13 @@ defmodule Nerves.System.Linter.Mixfile do
   def project do
     [
       app: :nerves_system_linter,
-      version: "0.2.3",
+      version: "0.3.0",
       elixir: "~> 1.5",
       package: package(),
       description: description(),
       start_permanent: Mix.env() == :prod,
       elixirc_paths: ["lib", "rules"],
-      deps: []
+      deps: [{:ex_doc, ">= 0.0.0", only: :dev}]
     ]
   end
 
