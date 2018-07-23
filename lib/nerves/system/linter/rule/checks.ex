@@ -70,6 +70,16 @@ defmodule Nerves.System.Linter.Rule.Checks do
     end
   end
 
+  def refute_trystate(%Defconfig{} = defconfig, config, opts \\ []) do
+    if eval_conditionals(defconfig, opts) do
+      res = !(config in Map.keys(defconfig.config))
+      message = Keyword.get(opts, :message, "trystate #{config}: should be disabled")
+      update(defconfig, res, message, opts)
+    else
+      defconfig
+    end
+  end
+
   def eval_conditionals(defconfig, opts) do
     case Keyword.fetch(opts, :if) do
       {:ok, l} when is_list(l) ->
