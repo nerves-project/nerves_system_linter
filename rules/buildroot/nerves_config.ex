@@ -1,4 +1,4 @@
-defmodule Nerves.System.Linter.Rule.NervesConfig do
+defmodule Nerves.System.Linter.Buildroot.Rule.NervesConfig do
   use Nerves.System.Linter.Rule
   ensure_package "NERVES_CONFIG"
 

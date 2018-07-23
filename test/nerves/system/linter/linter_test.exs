@@ -36,35 +36,37 @@ defmodule Nerves.System.LinterTest do
     end
   end
 
-  test "lints rpi0 build config" do
-    file = find_file("rpi0.build.config")
+  describe "buildroot" do
+    test "lints rpi0 build config" do
+      file = find_file("rpi0.build.config")
 
-    res =
-      Linter.file_to_map(file)
-      |> Defconfig.add_rules([@success_rule, @warn_rule, @error_rule])
-      |> Linter.eval_rules()
+      res =
+        Linter.file_to_map(file, :buildroot)
+        |> Defconfig.add_rules([@success_rule, @warn_rule, @error_rule])
+        |> Linter.eval_rules()
 
-    # make sure all the rules were evaluated.
-    assert res.rules == []
+      # make sure all the rules were evaluated.
+      assert res.rules == []
 
-    assert res.errors == ["ensure_package: BR2_PACKAGE_NOT_REAL_PACKAGE_B: false"]
-    assert res.warnings == ["ensure_package: BR2_PACKAGE_NOT_REAL_PACKAGE_A: false"]
-    assert res.success == ["ensure_package: BR2_PACKAGE_NERVES_CONFIG: true"]
-  end
+      assert res.errors == ["ensure_package: BR2_PACKAGE_NOT_REAL_PACKAGE_B: false"]
+      assert res.warnings == ["ensure_package: BR2_PACKAGE_NOT_REAL_PACKAGE_A: false"]
+      assert res.success == ["ensure_package: BR2_PACKAGE_NERVES_CONFIG: true"]
+    end
 
-  test "lints rpi0 defconfig" do
-    file = find_file("rpi0_defconfig")
+    test "lints rpi0 defconfig" do
+      file = find_file("rpi0_defconfig")
 
-    res =
-      Linter.file_to_map(file)
-      |> Defconfig.add_rules([@success_rule, @warn_rule, @error_rule])
-      |> Linter.eval_rules()
+      res =
+        Linter.file_to_map(file, :buildroot)
+        |> Defconfig.add_rules([@success_rule, @warn_rule, @error_rule])
+        |> Linter.eval_rules()
 
-    # make sure all the rules were evaluated.
-    assert res.rules == []
+      # make sure all the rules were evaluated.
+      assert res.rules == []
 
-    assert res.errors == ["ensure_package: BR2_PACKAGE_NOT_REAL_PACKAGE_B: false"]
-    assert res.warnings == ["ensure_package: BR2_PACKAGE_NOT_REAL_PACKAGE_A: false"]
-    assert res.success == ["ensure_package: BR2_PACKAGE_NERVES_CONFIG: true"]
+      assert res.errors == ["ensure_package: BR2_PACKAGE_NOT_REAL_PACKAGE_B: false"]
+      assert res.warnings == ["ensure_package: BR2_PACKAGE_NOT_REAL_PACKAGE_A: false"]
+      assert res.success == ["ensure_package: BR2_PACKAGE_NERVES_CONFIG: true"]
+    end
   end
 end

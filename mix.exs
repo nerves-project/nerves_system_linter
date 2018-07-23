@@ -4,7 +4,7 @@ defmodule Nerves.System.Linter.Mixfile do
   def project do
     [
       app: :nerves_system_linter,
-      version: "0.3.0",
+      version: "0.4.0-rc.0",
       elixir: "~> 1.5",
       package: package(),
       description: description(),

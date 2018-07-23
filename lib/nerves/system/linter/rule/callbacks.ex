@@ -67,6 +67,25 @@ defmodule Nerves.System.Linter.Rule.Callbacks do
     end
   end
 
+  @doc "Ensures a config is a module"
+  defmacro ensure_module(config_name, opts \\ []) do
+    quote do
+      @rules [
+        %Rule{check: :ensure_module, args: [unquote(config_name), unquote(opts)]}
+        | @rules
+      ]
+    end
+  end
+
+  defmacro refute_trystate(config_name, opts \\ []) do
+    quote do
+      @rules [
+        %Rule{check: :refute_trystate, args: [unquote(config_name), unquote(opts)]}
+        | @rules
+      ]
+    end
+  end
+
   @doc false
   defmacro __before_compile__(_) do
     quote do

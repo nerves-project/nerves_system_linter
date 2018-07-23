@@ -1,7 +1,11 @@
 defmodule Mix.Tasks.Nerves.System.Lint do
   @usage """
   Usage:
-  mix nerves.system.lint nerves_defconfig path_to_rules
+  For Buildroot defconfigs:
+    mix nerves.system.lint buildroot defconfig path_to_rules
+
+  For Linux defconfigs:
+    mix nerves.system.lint linux defconfig path_to_rules
   """
   @shortdoc "Lint a defconfig."
 
@@ -15,21 +19,29 @@ defmodule Mix.Tasks.Nerves.System.Lint do
   alias Nerves.System.Defconfig
   alias Nerves.System.Linter
 
-  @default_rules File.ls!("rules")
-                 |> Enum.map(fn filename ->
-                   mod = Path.rootname(filename) |> Macro.camelize()
-                   Module.concat(["Nerves", "System", "Linter", "Rule", mod])
-                 end)
+  @default_br_rules Path.join("rules", "buildroot")
+                    |> File.ls!()
+                    |> Enum.map(fn filename ->
+                      mod = Path.rootname(filename) |> Macro.camelize()
+                      Module.concat(["Nerves", "System", "Linter", "Buildroot", "Rule", mod])
+                    end)
 
-  def run(opts) do
+  @default_linux_rules Path.join("rules", "linux")
+                       |> File.ls!()
+                       |> Enum.map(fn filename ->
+                         mod = Path.rootname(filename) |> Macro.camelize()
+                         Module.concat(["Nerves", "System", "Linter", "Linux", "Rule", mod])
+                       end)
+
+  def run(["buildroot" | opts]) do
     case opts do
       [] ->
-        auto_detect_defconfig()
+        auto_detect_br_defconfig()
 
       [defconfig_file] ->
         defconfig_file
-        |> Linter.file_to_map()
-        |> Defconfig.add_rules(@default_rules)
+        |> Linter.file_to_map(:buildroot)
+        |> Defconfig.add_rules(@default_br_rules)
         |> Linter.eval_rules()
         |> print()
 
@@ -37,8 +49,8 @@ defmodule Mix.Tasks.Nerves.System.Lint do
         {defconfig_file, rules_dir} = detect_opts(path_a, path_b)
 
         defconfig_file
-        |> Linter.file_to_map()
-        |> Defconfig.add_rules(@default_rules)
+        |> Linter.file_to_map(:buildroot)
+        |> Defconfig.add_rules(@default_br_rules)
         |> Defconfig.add_rules(find_rules(rules_dir))
         |> Linter.eval_rules()
         |> print()
@@ -46,7 +58,36 @@ defmodule Mix.Tasks.Nerves.System.Lint do
     end
   end
 
-  def auto_detect_defconfig do
+  def run(["linux" | opts]) do
+    case opts do
+      [] ->
+        auto_detect_linux_defconfig()
+
+      [defconfig_file] ->
+        defconfig_file
+        |> Linter.file_to_map(:linux)
+        |> Defconfig.add_rules(@default_linux_rules)
+        |> Linter.eval_rules()
+        |> print()
+
+      [path_a, path_b] ->
+        {defconfig_file, rules_dir} = detect_opts(path_a, path_b)
+
+        defconfig_file
+        |> Linter.file_to_map(:linux)
+        |> Defconfig.add_rules(@default_linux_rules)
+        |> Defconfig.add_rules(find_rules(rules_dir))
+        |> Linter.eval_rules()
+        |> print()
+        |> quit()
+    end
+  end
+
+  def run(_) do
+    Mix.raise(@usage)
+  end
+
+  def auto_detect_br_defconfig do
     case System.get_env("NERVES_SYSTEM") do
       nil ->
         Mix.raise("Could not detect buildroot output dir.")
@@ -54,12 +95,16 @@ defmodule Mix.Tasks.Nerves.System.Lint do
       buildroot_dir ->
         [buildroot_dir, ".config"]
         |> Path.join()
-        |> Linter.file_to_map()
-        |> Defconfig.add_rules(@default_rules)
+        |> Linter.file_to_map(:buildroot)
+        |> Defconfig.add_rules(@default_br_rules)
         |> Linter.eval_rules()
         |> print()
         |> quit()
     end
+  end
+
+  def auto_detect_linux_defconfig do
+    Mix.raise("bye")
   end
 
   defp detect_opts(path_a, path_b) do

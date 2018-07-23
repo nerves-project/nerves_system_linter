@@ -32,8 +32,8 @@ defmodule Nerves.System.Linter do
   end
 
   @doc "reads a defconfig, and turns it into a map."
-  @spec file_to_map(Path.t()) :: Defconfig.t()
-  def file_to_map(file) do
+  @spec file_to_map(Path.t(), :buildroot | :linux) :: Defconfig.t()
+  def file_to_map(file, type) do
     Defconfig
     |> struct()
     |> Map.put(:path, file)
@@ -43,11 +43,21 @@ defmodule Nerves.System.Linter do
       |> String.trim()
       |> String.split("\n")
       |> strip_comments()
-      |> Map.new(fn line ->
-        [key, ugly_val] = String.split(line, "=")
-        {String.trim(key), parse_val(ugly_val)}
-      end)
+      |> Map.new(&parse_line(&1, type))
     )
+  end
+
+  defp parse_line(line, :buildroot) do
+    [key, ugly_val] = String.split(line, "=")
+    {String.trim(key), parse_val(ugly_val)}
+  end
+
+  defp parse_line(line, :linux) do
+    case String.split(line, "=") do
+      [key, ugly_val] -> {String.trim(key), parse_val(ugly_val)}
+      [key | data] -> {String.trim(key), parse_val(Enum.join(data))}
+      data -> Mix.raise("#{line} => #{inspect(data)}")
+    end
   end
 
   @spec parse_val(binary) :: Defconfig.package_value()
@@ -59,26 +69,29 @@ defmodule Nerves.System.Linter do
       ["", val, ""] -> val
       [val] -> val
     end
-    |> maybe_parse_bool()
+    |> maybe_parse_trystate()
     |> maybe_parse_val_as_list
   end
 
-  @spec maybe_parse_bool(binary) :: boolean | binary
-  defp maybe_parse_bool("y"), do: true
-  defp maybe_parse_bool("n"), do: false
-  defp maybe_parse_bool(val), do: val
+  @spec maybe_parse_trystate(binary) :: boolean | :module | binary
+  defp maybe_parse_trystate("y"), do: true
+  defp maybe_parse_trystate("n"), do: false
+  defp maybe_parse_trystate("m"), do: :module
+  defp maybe_parse_trystate(val), do: val
 
   @spec maybe_parse_val_as_list(binary | boolean) :: [binary] | boolean | binary
   defp maybe_parse_val_as_list(val) when is_boolean(val) do
     val
   end
 
-  defp maybe_parse_val_as_list(val) do
+  defp maybe_parse_val_as_list(val) when is_binary(val) do
     case String.split(val, " ") do
       [val] -> val
       [_ | _] = val -> val
     end
   end
+
+  defp maybe_parse_val_as_list(val), do: val
 
   @spec strip_comments([binary], [binary]) :: [binary]
   defp strip_comments(data, acc \\ [])

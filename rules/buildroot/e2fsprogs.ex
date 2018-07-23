@@ -1,4 +1,4 @@
-defmodule Nerves.System.Linter.Rule.E2fsprogs do
+defmodule Nerves.System.Linter.Buildroot.Rule.E2fsprogs do
   use Nerves.System.Linter.Rule
   ensure_package "BR2_PACKAGE_E2FSPROGS", warn: true
   # e2fsprogs is used to format the application partition since most Nerves
