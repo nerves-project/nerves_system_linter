@@ -3,7 +3,8 @@ locals_without_parens = [
   ensure_value: 2, ensure_value: 3,
   ensure_bool: 1, ensure_bool: 2,
   ensure_package: 1, ensure_package: 2,
-  ensure_value_match: 2, ensure_value_match: 3
+  ensure_value_match: 2, ensure_value_match: 3,
+  ensure_module: 2, ensure_module: 3
 ]
 [
   inputs: ["mix.exs", "{config,lib,rules,test}/**/*.{ex,exs}"],

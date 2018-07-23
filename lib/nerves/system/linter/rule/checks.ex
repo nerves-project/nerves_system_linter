@@ -60,6 +60,16 @@ defmodule Nerves.System.Linter.Rule.Checks do
     end
   end
 
+  def ensure_module(%Defconfig{} = defconfig, config, opts \\ []) do
+    if eval_conditionals(defconfig, opts) do
+      res = match?(:module, defconfig.config[config]) || match?(true, defconfig.config[config])
+      message = Keyword.get(opts, :message, "ensure_module: #{config}: #{res || false}")
+      update(defconfig, res, message, opts)
+    else
+      defconfig
+    end
+  end
+
   def eval_conditionals(defconfig, opts) do
     case Keyword.fetch(opts, :if) do
       {:ok, l} when is_list(l) ->

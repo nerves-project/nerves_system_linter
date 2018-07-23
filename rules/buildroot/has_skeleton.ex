@@ -1,4 +1,4 @@
-defmodule Nerves.System.Linter.Rule.HasSkeleton do
+defmodule Nerves.System.Linter.Buildroot.Rule.HasSkeleton do
   use Nerves.System.Linter.Rule
   ensure_bool "BR2_ROOTFS_SKELETON_CUSTOM"
 
