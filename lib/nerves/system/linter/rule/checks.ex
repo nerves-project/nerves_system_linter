@@ -4,7 +4,7 @@ defmodule Nerves.System.Linter.Rule.Checks do
   alias Nerves.System.Linter.Rule.Callbacks
 
   @doc "Ensures a package is enabled."
-  @spec ensure_package(Defconfig.t, Defconfig.config_name, Callbacks.args) :: Defconfig.t
+  @spec ensure_package(Defconfig.t(), Defconfig.config_name(), Callbacks.args()) :: Defconfig.t()
   def ensure_package(defconfig, package_name, opts \\ [])
 
   def ensure_package(
@@ -30,7 +30,8 @@ defmodule Nerves.System.Linter.Rule.Checks do
   end
 
   @doc "Ensures a boolean value."
-  @spec ensure_bool(Defconfig.t, Defconfig.config_name, boolean, Callbacks.args) :: Defconfig.t
+  @spec ensure_bool(Defconfig.t(), Defconfig.config_name(), boolean, Callbacks.args()) ::
+          Defconfig.t()
   def ensure_bool(%Defconfig{} = defconfig, config, bool, opts \\ []) do
     if eval_conditionals(defconfig, opts) do
       res = config in Map.keys(defconfig.config) and defconfig.config[config] == bool
@@ -42,7 +43,12 @@ defmodule Nerves.System.Linter.Rule.Checks do
   end
 
   @doc "Ensures a value."
-  @spec ensure_value(Defconfig.t, Defconfig.config_name, Defconfig.package_value, Callbacks.args) :: Defconfig.t
+  @spec ensure_value(
+          Defconfig.t(),
+          Defconfig.config_name(),
+          Defconfig.package_value(),
+          Callbacks.args()
+        ) :: Defconfig.t()
   def ensure_value(%Defconfig{} = defconfig, config, value, opts \\ []) do
     if eval_conditionals(defconfig, opts) do
       res = defconfig.config[config] == value
@@ -57,11 +63,12 @@ defmodule Nerves.System.Linter.Rule.Checks do
   def eval_conditionals(defconfig, opts) do
     case Keyword.fetch(opts, :if) do
       {:ok, l} when is_list(l) ->
-        Enum.any?(l, fn({check, val}) ->
+        Enum.any?(l, fn {check, val} ->
           r = defconfig.config[check] == (val || false)
           # IO.puts "Conditional: #{check}(#{defconfig.config[check]}) => #{val} (#{r})"
           r
         end)
+
       :error ->
         true
     end
@@ -70,19 +77,23 @@ defmodule Nerves.System.Linter.Rule.Checks do
   def ensure_value_match(defconfig, package_name, pattern, opts \\ []) do
     pattern = Code.eval_string(pattern)
     expr = defconfig.config[package_name]
-    quoted = quote do
-      case {unquote(expr), []} do
-        unquote(pattern) ->
-          true
-        _ ->
-          false
+
+    quoted =
+      quote do
+        case {unquote(expr), []} do
+          unquote(pattern) ->
+            true
+
+          _ ->
+            false
+        end
       end
-    end
+
     {res, _env} = Code.eval_quoted(quoted)
     update(defconfig, res, "ensure_value_match: #{package_name}: #{res || false}", opts)
   end
 
-  @spec update(Defconfig.t, boolean, Callbacks.message, Callbacks.args) :: Defconfig.t
+  @spec update(Defconfig.t(), boolean, Callbacks.message(), Callbacks.args()) :: Defconfig.t()
   defp update(defconfig, res, message, opts) do
     warn? = Keyword.get(opts, :warn, false)
 

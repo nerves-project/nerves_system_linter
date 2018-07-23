@@ -28,19 +28,21 @@ defmodule Nerves.System.LinterTest do
 
   defp find_file(filename) do
     file = Path.join(["fixture", "buildroot", filename])
+
     if File.exists?(file) do
       file
     else
-      flunk "Coudl not find file: #{filename}"
+      flunk("Coudl not find file: #{filename}")
     end
   end
 
-  @timeout :infinity
   test "lints rpi0 build config" do
     file = find_file("rpi0.build.config")
-    res = Linter.file_to_map(file)
-    |> Defconfig.add_rules([@success_rule, @warn_rule, @error_rule])
-    |> Linter.eval_rules()
+
+    res =
+      Linter.file_to_map(file)
+      |> Defconfig.add_rules([@success_rule, @warn_rule, @error_rule])
+      |> Linter.eval_rules()
 
     # make sure all the rules were evaluated.
     assert res.rules == []
@@ -52,9 +54,11 @@ defmodule Nerves.System.LinterTest do
 
   test "lints rpi0 defconfig" do
     file = find_file("rpi0_defconfig")
-    res = Linter.file_to_map(file)
-    |> Defconfig.add_rules([@success_rule, @warn_rule, @error_rule])
-    |> Linter.eval_rules()
+
+    res =
+      Linter.file_to_map(file)
+      |> Defconfig.add_rules([@success_rule, @warn_rule, @error_rule])
+      |> Linter.eval_rules()
 
     # make sure all the rules were evaluated.
     assert res.rules == []

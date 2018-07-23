@@ -8,9 +8,9 @@ defmodule Nerves.System.Linter.Rule do
 
   @typedoc @moduledoc
   @type rule :: %__MODULE__{
-    check: Callbacks.check,
-    args: Callbacks.args
-  }
+          check: Callbacks.check(),
+          args: Callbacks.args()
+        }
 
   @typedoc @moduledoc
   @type t :: rule
@@ -24,9 +24,14 @@ defmodule Nerves.System.Linter.Rule do
         """
       end
 
-      Module.register_attribute __MODULE__,
-      :rules, accumulate: false, persist: false
-      Module.put_attribute __MODULE__, :rules, nil
+      Module.register_attribute(
+        __MODULE__,
+        :rules,
+        accumulate: false,
+        persist: false
+      )
+
+      Module.put_attribute(__MODULE__, :rules, nil)
 
       alias Nerves.System.Linter.Rule
       alias Nerves.System.Linter.Rule.Callbacks
@@ -35,13 +40,14 @@ defmodule Nerves.System.Linter.Rule do
       @after_compile __MODULE__
       @behaviour Rule
 
-
       defmacro __after_compile__(_env, _md5) do
         # IO.puts __MODULE__
         unless function_exported?(__MODULE__, :__checks__, 0) do
-          raise CompileError, description: """
-          Be sure to call `evaluate()` after your rule is defined.
-          """, file: __ENV__.file
+          raise CompileError,
+            description: """
+            Be sure to call `evaluate()` after your rule is defined.
+            """,
+            file: __ENV__.file
         end
       end
     end
