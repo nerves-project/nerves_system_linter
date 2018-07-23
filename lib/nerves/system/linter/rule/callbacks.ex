@@ -16,39 +16,54 @@ defmodule Nerves.System.Linter.Rule.Callbacks do
   @type message_arg :: {:message, message}
 
   @typedoc "Human readable message for a check."
-  @type message :: String.t
+  @type message :: String.t()
 
   @typedoc "If a check evaluates false, it should be a warning instead of error."
   @type warning_arg :: {:warn, boolean}
 
   defmacro ensure_value_match(config_name, pattern, opts \\ []) do
-    pattern = inspect pattern
+    pattern = inspect(pattern)
+
     quote do
-      @rules [%Rule{check: :ensure_value_match, args: [unquote(config_name), unquote(pattern), unquote(opts)]} | @rules]
+      @rules [
+        %Rule{
+          check: :ensure_value_match,
+          args: [unquote(config_name), unquote(pattern), unquote(opts)]
+        }
+        | @rules
+      ]
     end
   end
 
   @doc "Ensures a package is enabled."
-  @spec ensure_package(Defconfig.config_name, args) :: Macro.t
+  @spec ensure_package(Defconfig.config_name(), args) :: Macro.t()
   defmacro ensure_package(package_name, opts \\ []) do
     quote do
-      @rules [%Rule{check: :ensure_package, args: [unquote(package_name), unquote(opts)]} | @rules]
+      @rules [
+        %Rule{check: :ensure_package, args: [unquote(package_name), unquote(opts)]} | @rules
+      ]
     end
   end
 
   @doc "Ensures a boolean value."
-  @spec ensure_bool(Defconfig.config_name, args) :: Macro.t
+  @spec ensure_bool(Defconfig.config_name(), args) :: Macro.t()
   defmacro ensure_bool(config_name, bool \\ true, opts \\ []) do
     quote do
-      @rules [%Rule{check: :ensure_bool, args: [unquote(config_name), unquote(bool), unquote(opts)]} | @rules]
+      @rules [
+        %Rule{check: :ensure_bool, args: [unquote(config_name), unquote(bool), unquote(opts)]}
+        | @rules
+      ]
     end
   end
 
   @doc "Ensures a value."
-  @spec ensure_value(Defconfig.config_name, args) :: Macro.t
+  @spec ensure_value(Defconfig.config_name(), args) :: Macro.t()
   defmacro ensure_value(config_name, value, opts \\ []) do
     quote do
-      @rules [%Rule{check: :ensure_value, args: [unquote(config_name), unquote(value), unquote(opts)]} | @rules]
+      @rules [
+        %Rule{check: :ensure_value, args: [unquote(config_name), unquote(value), unquote(opts)]}
+        | @rules
+      ]
     end
   end
 
@@ -64,7 +79,7 @@ defmodule Nerves.System.Linter.Rule.Callbacks do
   defmacro evaluate do
     quote do
       @doc false
-      @spec __checks__ :: [Rule.rule]
+      @spec __checks__ :: [Rule.rule()]
       def __checks__, do: @rules
     end
   end

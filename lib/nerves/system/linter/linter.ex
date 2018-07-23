@@ -8,7 +8,7 @@ defmodule Nerves.System.Linter do
   alias Nerves.System.Linter.Rule.Checks
 
   @doc "Evaluates the rules that have been built."
-  @spec eval_rules(Defconfig.t) :: Defconfig.t
+  @spec eval_rules(Defconfig.t()) :: Defconfig.t()
   def eval_rules(defconfig)
 
   def eval_rules(%Defconfig{rules: []} = config) do
@@ -19,46 +19,46 @@ defmodule Nerves.System.Linter do
     %{enumerate_checks(config, rule.__checks__) | rules: remaining} |> eval_rules()
   end
 
-
   @doc "Actually aplies a list of rules on the config."
-  @spec enumerate_checks(Defconfig.t, [Rule.rule]) :: Defconfig.t
+  @spec enumerate_checks(Defconfig.t(), [Rule.rule()]) :: Defconfig.t()
   def enumerate_checks(defconfig, rules)
 
   def enumerate_checks(%Defconfig{} = config, nil), do: config
   def enumerate_checks(%Defconfig{} = config, []), do: config
+
   def enumerate_checks(%Defconfig{} = config, [%Rule{check: fun, args: args} | rest]) do
     res = apply(Checks, fun, [config | args])
     enumerate_checks(res, rest)
   end
 
   @doc "reads a defconfig, and turns it into a map."
-  @spec file_to_map(Path.t) :: Defconfig.t
+  @spec file_to_map(Path.t()) :: Defconfig.t()
   def file_to_map(file) do
     Defconfig
     |> struct()
     |> Map.put(:path, file)
     |> Map.put(
-         :config,
-         File.read!(file)
-         |> String.trim()
-         |> String.split("\n")
-         |> strip_comments()
-         |> Map.new(fn line ->
-              [key, ugly_val] = String.split(line, "=")
-              {String.trim(key), parse_val(ugly_val)}
-            end)
-       )
+      :config,
+      File.read!(file)
+      |> String.trim()
+      |> String.split("\n")
+      |> strip_comments()
+      |> Map.new(fn line ->
+        [key, ugly_val] = String.split(line, "=")
+        {String.trim(key), parse_val(ugly_val)}
+      end)
+    )
   end
 
-  @spec parse_val(binary) :: Defconfig.package_value
+  @spec parse_val(binary) :: Defconfig.package_value()
   defp parse_val(ugly_val) do
     ugly_val
     |> String.trim()
     |> String.split("\"")
     |> case do
-         ["", val, ""] -> val
-         [val] -> val
-       end
+      ["", val, ""] -> val
+      [val] -> val
+    end
     |> maybe_parse_bool()
     |> maybe_parse_val_as_list
   end
