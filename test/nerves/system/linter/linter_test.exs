@@ -67,4 +67,20 @@ defmodule Nerves.System.LinterTest do
     assert res.warnings == ["ensure_package: BR2_PACKAGE_NOT_REAL_PACKAGE_A: false"]
     assert res.success == ["ensure_package: BR2_PACKAGE_NERVES_CONFIG: true"]
   end
+
+  test "lints osd32mp1 defconfig" do
+    file = find_file("osd32mp1_defconfig")
+
+    res =
+      Linter.file_to_map(file)
+      |> Defconfig.add_rules([@success_rule, @warn_rule, @error_rule])
+      |> Linter.eval_rules()
+
+    # make sure all the rules were evaluated.
+    assert res.rules == []
+
+    assert res.errors == ["ensure_package: BR2_PACKAGE_NOT_REAL_PACKAGE_B: false"]
+    assert res.warnings == ["ensure_package: BR2_PACKAGE_NOT_REAL_PACKAGE_A: false"]
+    assert res.success == ["ensure_package: BR2_PACKAGE_NERVES_CONFIG: true"]
+  end
 end

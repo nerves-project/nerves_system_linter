@@ -44,7 +44,7 @@ defmodule Nerves.System.Linter do
       |> String.split("\n")
       |> strip_comments()
       |> Map.new(fn line ->
-        [key, ugly_val] = String.split(line, "=")
+        [key, ugly_val] = String.split(line, "=", parts: 2)
         {String.trim(key), parse_val(ugly_val)}
       end)
     )
