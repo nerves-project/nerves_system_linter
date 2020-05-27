@@ -23,7 +23,7 @@ defmodule Nerves.System.Linter.Mixfile do
   defp deps do
     [
       {:ex_doc, ">= 0.0.0", only: :dev},
-      {:dialyxir, "1.0.0-rc.3", only: :dev}
+      {:dialyxir, "~> 1.0.0", only: :dev}
     ]
   end
 
