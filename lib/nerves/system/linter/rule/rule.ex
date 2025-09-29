@@ -18,7 +18,7 @@ defmodule Nerves.System.Linter.Rule do
   @doc false
   defmacro __using__(_) do
     quote do
-      unless @moduledoc do
+      if !@moduledoc do
         @moduledoc """
         Linter Rule #{__MODULE__}
         """
@@ -42,7 +42,7 @@ defmodule Nerves.System.Linter.Rule do
 
       defmacro __after_compile__(_env, _md5) do
         # IO.puts __MODULE__
-        unless function_exported?(__MODULE__, :__checks__, 0) do
+        if !function_exported?(__MODULE__, :__checks__, 0) do
           raise CompileError,
             description: """
             Be sure to call `evaluate()` after your rule is defined.

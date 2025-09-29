@@ -16,7 +16,7 @@ defmodule Nerves.System.Linter do
   end
 
   def eval_rules(%Defconfig{rules: [rule | remaining]} = config) do
-    %{enumerate_checks(config, rule.__checks__) | rules: remaining} |> eval_rules()
+    %{enumerate_checks(config, rule.__checks__()) | rules: remaining} |> eval_rules()
   end
 
   @doc "Actually aplies a list of rules on the config."
@@ -60,7 +60,7 @@ defmodule Nerves.System.Linter do
       [val] -> val
     end
     |> maybe_parse_bool()
-    |> maybe_parse_val_as_list
+    |> maybe_parse_val_as_list()
   end
 
   @spec maybe_parse_bool(binary) :: boolean | binary
