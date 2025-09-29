@@ -4,7 +4,7 @@ defmodule Nerves.System.Linter.Mixfile do
   def project do
     [
       app: :nerves_system_linter,
-      version: "0.4.0",
+      version: "0.4.1",
       elixir: "~> 1.5",
       package: package(),
       description: description(),
@@ -36,9 +36,8 @@ defmodule Nerves.System.Linter.Mixfile do
   defp package do
     [
       maintainers: ["Connor Rigby"],
-      licenses: ["Apache 2.0"],
+      licenses: ["Apache-2.0"],
       files: [
-        "config",
         "fixture",
         "lib",
         "rules",
