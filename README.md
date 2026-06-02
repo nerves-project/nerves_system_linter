@@ -14,7 +14,7 @@ end
 
 This package includes a new mix task named `nerves.system.lint` which can run
 for a customized nerves system (ref
-[customizing-your-own-nerves-system](https://hexdocs.pm/nerves/systems.html#customizing-your-own-nerves-system))
+[customizing-your-own-nerves-system](https://nerves.hexdocs.pm/systems.html#customizing-your-own-nerves-system))
 against its config file, typically named `nerves_defconfig`.
 
 Running this task would typically look something like this:
@@ -48,7 +48,7 @@ framework.  Use caution when these checks are present after running the linter.
 
 For complete instructions on how to build a custom nerves system reference the
 [nerves
-guides](https://hexdocs.pm/nerves/systems.html#customizing-your-own-nerves-system)
+guides](https://nerves.hexdocs.pm/systems.html#customizing-your-own-nerves-system)
 or the nerves_system_br
 [README](https://github.com/nerves-project/nerves_system_br/blob/master/README.md).
 
