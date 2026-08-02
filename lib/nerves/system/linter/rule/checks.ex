@@ -99,7 +99,7 @@ defmodule Nerves.System.Linter.Rule.Checks do
 
     cond do
       res -> %{defconfig | success: [message | defconfig.success]}
-      warn? and !res -> %{defconfig | warnings: [message | defconfig.warnings]}
+      warn? -> %{defconfig | warnings: [message | defconfig.warnings]}
       true -> %{defconfig | errors: [message | defconfig.errors]}
     end
   end
