@@ -1,5 +1,8 @@
 # Nerves.System.Linter
 
+[![Hex version](https://img.shields.io/hexpm/v/nerves_system_linter.svg "Hex version")](https://hex.pm/packages/nerves_system_linter)
+[![API docs](https://img.shields.io/hexpm/v/nerves_system_linter.svg?label=hexdocs "API docs")](https://nerves-system-linter.hexdocs.pm/Nerves.System.Linter.html)
+
 ## Installation
 
 ```elixir
